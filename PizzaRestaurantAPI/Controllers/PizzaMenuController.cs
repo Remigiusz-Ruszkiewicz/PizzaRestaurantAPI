@@ -12,11 +12,13 @@ namespace PizzaRestaurantAPI.Controllers
         public PizzaMenuController(DatabaseContext db)
         {
             _db = db;
+            _db.Database.EnsureCreated();
         }
         [HttpPost(ApiRoutes.Pizza.AddPizza)]
         public void Add([FromBody] PizzaModel pizza)
         {
             _db.Pizzas.Add(pizza);
+            _db.SaveChanges();
         }
         [HttpGet(ApiRoutes.Pizza.GetAllPizza)]
         public IEnumerable<PizzaModel> Get() => _db.Pizzas.ToArray();

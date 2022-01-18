@@ -12,7 +12,7 @@ using PizzaRestaurantAPI.Data;
 namespace PizzaRestaurantAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220118162924_initial")]
+    [Migration("20220118201311_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
