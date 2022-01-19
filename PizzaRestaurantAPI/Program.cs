@@ -1,7 +1,8 @@
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using PizzaRestaurantAPI.Contracts.Requests;
 using PizzaRestaurantAPI.Data;
-using PizzaRestaurantAPI.Models;
+using PizzaRestaurantAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,19 +10,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<PizzaValidator>());
 builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(
-    builder.Configuration.GetConnectionString("PizzasDb")
+    builder.Configuration.GetConnectionString("PizzasDb"),
+    sqlServerOptionsAction: sqloptions => {
+        sqloptions.EnableRetryOnFailure();
+    }
     ));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<PizzaValidator>());
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<IPizzaService, PizzaService>();
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<DatabaseContext>();
-    context.Database.EnsureCreatedAsync();
+    context.Database.EnsureCreated();
 }
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

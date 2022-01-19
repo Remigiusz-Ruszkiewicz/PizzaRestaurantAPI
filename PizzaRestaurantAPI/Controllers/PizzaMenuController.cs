@@ -1,25 +1,31 @@
 using Microsoft.AspNetCore.Mvc;
 using PizzaRestaurantAPI.Contracts;
+using PizzaRestaurantAPI.Contracts.Requests;
 using PizzaRestaurantAPI.Data;
 using PizzaRestaurantAPI.Models;
+using PizzaRestaurantAPI.Services;
 
 namespace PizzaRestaurantAPI.Controllers
 {
     [ApiController]
     public class PizzaMenuController : ControllerBase
     {
-        private readonly DatabaseContext _db;
-        public PizzaMenuController(DatabaseContext db)
+        private readonly IPizzaService _pizzaService;
+
+        public PizzaMenuController(IPizzaService pizzaService)
         {
-            _db = db;
+            _pizzaService = pizzaService;
         }
         [HttpPost(ApiRoutes.Pizza.AddPizza)]
-        public void Add([FromBody] PizzaModel pizza)
+        public void Add([FromBody] PizzaRequest pizza)
         {
-            _db.Pizzas.Add(pizza);
-            _db.SaveChanges();
+            _pizzaService.AddPizzaAsync(pizza);
         }
         [HttpGet(ApiRoutes.Pizza.GetAllPizza)]
-        public IEnumerable<PizzaModel> Get() => _db.Pizzas.ToArray();
+        public async Task<IActionResult> GetAsync() {
+
+            var products = await _pizzaService.GetAllPizzasAsync();
+            return Ok(products);
+        }
     }
 }
