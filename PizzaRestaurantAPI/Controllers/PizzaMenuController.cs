@@ -12,7 +12,6 @@ namespace PizzaRestaurantAPI.Controllers
         public PizzaMenuController(DatabaseContext db)
         {
             _db = db;
-            _db.Database.EnsureCreated();
         }
         [HttpPost(ApiRoutes.Pizza.AddPizza)]
         public void Add([FromBody] PizzaModel pizza)
