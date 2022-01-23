@@ -1,8 +1,10 @@
 using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using PizzaRestaurantAPI.Contracts.Requests;
 using PizzaRestaurantAPI.Data;
 using PizzaRestaurantAPI.Services;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,7 @@ builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<IPizzaService, PizzaService>();
 var app = builder.Build();
 
